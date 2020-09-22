@@ -21,6 +21,10 @@ namespace vJoySerialFeeder
 	[DataContract]
 	public class AxisMapping : Mapping
 	{
+		public VJoyBase VJoy { get; private set; }
+
+		private VJoyCollectionBase vJoyEnumerator;
+
 		/// <summary>
 		/// Stores the mapping parameters
 		/// </summary>
@@ -106,9 +110,9 @@ namespace vJoySerialFeeder
 		
 		[DataMember]
 		public AxisParameters Parameters = new AxisParameters {
-			Min = 1000,
-			Max = 2000,
-			Center = 1500,
+			Min = 0,
+			Max = 1023,
+			Center = 511,
 			Expo = 0,
 			Symmetric = true,
 			Failsafe = AxisParameters.DEFAULT_FAILSAFE
@@ -119,7 +123,8 @@ namespace vJoySerialFeeder
 		private ComboBox joystickAxisDropdown;
 		private Label inputLabel;
 		private PictureBox progressBox;
-		
+		private ComboBox joystickDropDown;
+
 		protected override float Transform(int val)
 		{
 			return Parameters.Transform(val);
@@ -136,6 +141,7 @@ namespace vJoySerialFeeder
 			am.Parameters = Parameters;
 			am.Channel = Channel;
 			am.Axis = Axis;
+			am.Joystick = Joystick;
 			
 			return am;
 		}
@@ -157,6 +163,7 @@ namespace vJoySerialFeeder
 		public override void UpdateJoystick(VJoyBase vjoy)
 		{
 			vjoy.SetAxis(Axis, Output);
+			vjoy.SetName(Joystick);
 		}
 		
 		public override void Failsafe()
@@ -164,8 +171,6 @@ namespace vJoySerialFeeder
 			if(Parameters.Failsafe >= 0)
 				Output = Parameters.Failsafe/100.0f;
 		}
-		
-		
 		
 		private void onRemoveClick(object sender, EventArgs e)
 		{
@@ -209,14 +214,37 @@ namespace vJoySerialFeeder
 		private void onAxisChange(object sender, EventArgs e)
 		{
 			Axis = joystickAxisDropdown.SelectedIndex;
-			
 		}
-		
+
+		private void onJoystickChange(object sender, EventArgs e)
+		{
+			Joystick = joystickDropDown.SelectedItem.ToString();
+		}
+
+		void ErrorMessageBox(string message, string title)
+		{
+			MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+
 		private void initializePanel()
 		{
+			switch (Environment.OSVersion.Platform)
+			{
+				case PlatformID.Win32NT:
+					vJoyEnumerator = (VJoyCollectionBase)Activator.CreateInstance(Type.GetType("vJoySerialFeeder.VJoyCollectionWindows"));
+					break;
+				case PlatformID.Unix:
+					vJoyEnumerator = (VJoyCollectionBase)Activator.CreateInstance(Type.GetType("vJoySerialFeeder.VJoyCollectionLinux"));
+					break;
+				default:
+					ErrorMessageBox("Unsupported platform", "Fatal");
+					Application.Exit();
+					break;
+			}
+
 			panel = new FlowLayoutPanel();
 			panel.SuspendLayout();
-			panel.Size = new Size(600, 30);
+			panel.Size = new Size(630, 30);
 			
 			var label = new Label();
 			label.Text = "Channel:";
@@ -281,7 +309,15 @@ namespace vJoySerialFeeder
 			button.Click += onRemoveClick;
 			button.Size = new Size(55, 20);
 			panel.Controls.Add(button);
-			
+
+			joystickDropDown = new ComboBox();
+			joystickDropDown.DropDownStyle = ComboBoxStyle.DropDownList;
+			joystickDropDown.Size = new Size(72, 20);
+			joystickDropDown.Items.AddRange(vJoyEnumerator.GetJoysticks());
+			joystickDropDown.SelectedIndex = 0;
+			joystickDropDown.SelectedIndexChanged += onJoystickChange;
+			panel.Controls.Add(joystickDropDown);
+
 			panel.ResumeLayout();
 		}
 	}

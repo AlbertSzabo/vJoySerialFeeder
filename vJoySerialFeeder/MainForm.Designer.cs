@@ -20,8 +20,9 @@ namespace vJoySerialFeeder
 		private System.Windows.Forms.Button buttonConnect;
 		private System.Windows.Forms.Button buttonPortsRefresh;
 		private System.ComponentModel.BackgroundWorker backgroundWorker;
-		private System.Windows.Forms.ComboBox comboJoysticks;
-		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.ComboBox comboJoysticks1;
+        private System.Windows.Forms.ComboBox comboJoysticks2;
+        private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.ComboBox comboProfiles;
 		private System.Windows.Forms.Button buttonLoadProfile;
 		private System.Windows.Forms.Button buttonSaveProfile;
@@ -60,8 +61,9 @@ namespace vJoySerialFeeder
         	this.buttonConnect = new System.Windows.Forms.Button();
         	this.buttonPortsRefresh = new System.Windows.Forms.Button();
         	this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
-        	this.comboJoysticks = new System.Windows.Forms.ComboBox();
-        	this.label3 = new System.Windows.Forms.Label();
+        	this.comboJoysticks1 = new System.Windows.Forms.ComboBox();
+            this.comboJoysticks2 = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
         	this.comboProfiles = new System.Windows.Forms.ComboBox();
         	this.buttonLoadProfile = new System.Windows.Forms.Button();
         	this.buttonSaveProfile = new System.Windows.Forms.Button();
@@ -113,7 +115,7 @@ namespace vJoySerialFeeder
         	this.panelMappings.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
         	this.panelMappings.Location = new System.Drawing.Point(12, 135);
         	this.panelMappings.Name = "panelMappings";
-        	this.panelMappings.Size = new System.Drawing.Size(703, 378);
+        	this.panelMappings.Size = new System.Drawing.Size(750, 380);
         	this.panelMappings.TabIndex = 100;
         	this.panelMappings.WrapContents = false;
         	this.panelMappings.MouseEnter += new System.EventHandler(this.FlowLayoutPanel1MouseEnter);
@@ -186,16 +188,23 @@ namespace vJoySerialFeeder
         	// 
         	// comboJoysticks
         	// 
-        	this.comboJoysticks.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-        	this.comboJoysticks.FormattingEnabled = true;
-        	this.comboJoysticks.Location = new System.Drawing.Point(360, 37);
-        	this.comboJoysticks.Name = "comboJoysticks";
-        	this.comboJoysticks.Size = new System.Drawing.Size(72, 21);
-        	this.comboJoysticks.TabIndex = 5;
-        	// 
-        	// label3
-        	// 
-        	this.label3.Location = new System.Drawing.Point(266, 37);
+        	this.comboJoysticks1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+        	this.comboJoysticks1.FormattingEnabled = true;
+        	this.comboJoysticks1.Location = new System.Drawing.Point(360, 37);
+        	this.comboJoysticks1.Name = "comboJoysticks1";
+        	this.comboJoysticks1.Size = new System.Drawing.Size(72, 21);
+        	this.comboJoysticks1.TabIndex = 5;
+
+            this.comboJoysticks2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboJoysticks2.FormattingEnabled = true;
+            this.comboJoysticks2.Location = new System.Drawing.Point(452, 37);
+            this.comboJoysticks2.Name = "comboJoysticks2";
+            this.comboJoysticks2.Size = new System.Drawing.Size(72, 21);
+            this.comboJoysticks2.TabIndex = 5;
+            // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(266, 37);
         	this.label3.Name = "label3";
         	this.label3.Size = new System.Drawing.Size(88, 21);
         	this.label3.TabIndex = 13;
@@ -254,7 +263,7 @@ namespace vJoySerialFeeder
         	this.label5.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
         	this.label5.Location = new System.Drawing.Point(0, 93);
         	this.label5.Name = "label5";
-        	this.label5.Size = new System.Drawing.Size(730, 2);
+        	this.label5.Size = new System.Drawing.Size(750, 2);
         	this.label5.TabIndex = 19;
         	this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
         	// 
@@ -264,7 +273,7 @@ namespace vJoySerialFeeder
         	        	        	this.toolStripStatusLabel});
         	this.statusStrip1.Location = new System.Drawing.Point(0, 527);
         	this.statusStrip1.Name = "statusStrip1";
-        	this.statusStrip1.Size = new System.Drawing.Size(730, 22);
+        	this.statusStrip1.Size = new System.Drawing.Size(750, 22);
         	this.statusStrip1.SizingGrip = false;
         	this.statusStrip1.TabIndex = 20;
         	this.statusStrip1.Text = "statusStrip1";
@@ -351,7 +360,7 @@ namespace vJoySerialFeeder
         	this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
         	this.menuStrip1.Location = new System.Drawing.Point(0, 0);
         	this.menuStrip1.Name = "menuStrip1";
-        	this.menuStrip1.Size = new System.Drawing.Size(730, 24);
+        	this.menuStrip1.Size = new System.Drawing.Size(750, 24);
         	this.menuStrip1.TabIndex = 22;
         	this.menuStrip1.Text = "menuMain";
         	this.menuStrip1.MenuActivate += new System.EventHandler(this.MenuStrip1MenuActivate);
@@ -488,7 +497,7 @@ namespace vJoySerialFeeder
         	this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
         	this.label2.Location = new System.Drawing.Point(0, 22);
         	this.label2.Name = "label2";
-        	this.label2.Size = new System.Drawing.Size(730, 2);
+        	this.label2.Size = new System.Drawing.Size(750, 2);
         	this.label2.TabIndex = 23;
         	this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
         	// 
@@ -527,7 +536,7 @@ namespace vJoySerialFeeder
         	// 
         	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        	this.ClientSize = new System.Drawing.Size(730, 549);
+        	this.ClientSize = new System.Drawing.Size(760, 549);
         	this.Controls.Add(this.buttonScript);
         	this.Controls.Add(this.label2);
         	this.Controls.Add(this.buttonNewProfile);
@@ -545,8 +554,9 @@ namespace vJoySerialFeeder
         	this.Controls.Add(this.buttonLoadProfile);
         	this.Controls.Add(this.comboProfiles);
         	this.Controls.Add(this.label3);
-        	this.Controls.Add(this.comboJoysticks);
-        	this.Controls.Add(this.buttonPortsRefresh);
+        	this.Controls.Add(this.comboJoysticks1);
+            this.Controls.Add(this.comboJoysticks2);
+            this.Controls.Add(this.buttonPortsRefresh);
         	this.Controls.Add(this.buttonConnect);
         	this.Controls.Add(this.label1);
         	this.Controls.Add(this.comboPorts);

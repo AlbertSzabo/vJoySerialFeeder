@@ -43,6 +43,8 @@ namespace vJoySerialFeeder
 		/// <param name="id"></param>
         public abstract void Acquire(string id);
 
+        public abstract void SetName(string value);
+
         /// <summary>
         /// Should release the virtual joystick
         /// </summary>

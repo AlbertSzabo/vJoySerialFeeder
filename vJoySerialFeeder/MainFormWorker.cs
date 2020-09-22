@@ -26,8 +26,6 @@ namespace vJoySerialFeeder
 		Exception readerException;
 		int readerResult;
 		
-		
-		
 		void SerialReaderRunner() {
 			while(true) {
 				if(backgroundWorker.CancellationPending) 
@@ -176,7 +174,8 @@ namespace vJoySerialFeeder
 					}
 					
 					try {
-						lua.Update(VJoy, Channels, Failsafe);
+						lua.Update(VJoy1, Channels, Failsafe);
+						lua.Update(VJoy2, Channels, Failsafe);
 					}
 					catch(NullReferenceException) {
 						 // could happen lua==null if we loadProfile while connected
@@ -188,12 +187,20 @@ namespace vJoySerialFeeder
 					}
 					
 					foreach(Mapping m in mappings) {
-						m.UpdateJoystick(VJoy);
+						if (m.Joystick == joy1)
+						{
+							m.UpdateJoystick(VJoy1);
+						}
+                        if (m.Joystick == joy2)
+                        {
+							m.UpdateJoystick(VJoy2);
+						}
 					}
 					
-					VJoy.SetState();
-					
-					if(comAutomation != null)
+					VJoy1.SetState();
+					VJoy2.SetState();
+
+					if (comAutomation != null)
 						comAutomation.Dispatch();
 					
 					if(webSocket != null)
@@ -247,6 +254,7 @@ namespace vJoySerialFeeder
 			}
 			
 		}
+
 		void BackgroundWorkerRunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
 		{
 			disconnect2();

@@ -34,7 +34,7 @@ namespace vJoySerialFeeder
 			public const int DEFAULT_FAILSAFE_UPDATE_RATE = 100;
 			
 			[DataMember]
-			public string COMPort, VJoyInstance;
+			public string COMPort, VJoyInstance1, VJoyInstance2;
 			[DataMember]
 			public int Protocol;
 			[DataMember]

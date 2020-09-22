@@ -25,23 +25,29 @@ namespace vJoySerialFeeder
 		const string CONF_DIALOG_FILETYPES = "Configuration (*.json)|*.json|All files (*.*)|*.*";
 		
 		public static MainForm Instance {get; private set; }
-		
+
 		public int[] Channels { get; private set; }
 		public int ActiveChannels { get ; private set; }
-		public VJoyBase VJoy { get; private set;}
-		
+
+		public VJoyBase VJoy1 { get; private set; }
+		public VJoyBase VJoy2 { get; private set; }
+
+		public string joy1, joy2;
+
 		public event EventHandler ChannelDataUpdate;
 		
 		public int MappingCount { get { return mappings.Count; } }
 		
 		private List<Mapping> mappings = new List<Mapping>();
+
 		public Mapping MappingAt(int i) { return i >= mappings.Count ? null : mappings[i]; }
 		private bool connected = false;
 		private SerialReader serialReader;
 		private string protocolConfig = "";
-		
-		private VJoyCollectionBase vJoyEnumerator;
-		
+
+		private VJoyCollectionBase vJoyEnumerator1;
+		private VJoyCollectionBase vJoyEnumerator2;
+
 		private Configuration config;
 		private Configuration.Profile currentProfile;
 		private bool useCustomSerialParameters;
@@ -91,11 +97,13 @@ namespace vJoySerialFeeder
 
             switch (Environment.OSVersion.Platform) {
                 case PlatformID.Win32NT:
-					vJoyEnumerator = (VJoyCollectionBase)Activator.CreateInstance(Type.GetType("vJoySerialFeeder.VJoyCollectionWindows"));
-                    break;
+					vJoyEnumerator1 = (VJoyCollectionBase)Activator.CreateInstance(Type.GetType("vJoySerialFeeder.VJoyCollectionWindows"));
+					vJoyEnumerator2 = (VJoyCollectionBase)Activator.CreateInstance(Type.GetType("vJoySerialFeeder.VJoyCollectionWindows"));
+					break;
                 case PlatformID.Unix:
-                    vJoyEnumerator = (VJoyCollectionBase)Activator.CreateInstance(Type.GetType("vJoySerialFeeder.VJoyCollectionLinux"));
-                    break;
+                    vJoyEnumerator1 = (VJoyCollectionBase)Activator.CreateInstance(Type.GetType("vJoySerialFeeder.VJoyCollectionLinux"));
+					vJoyEnumerator2 = (VJoyCollectionBase)Activator.CreateInstance(Type.GetType("vJoySerialFeeder.VJoyCollectionLinux"));
+					break;
                 default:
                     ErrorMessageBox("Unsupported platform", "Fatal");
                     Application.Exit();
@@ -109,7 +117,8 @@ namespace vJoySerialFeeder
                 e.Value = e.Value.ToString().Replace("/dev/", "");
             };
 			reloadComPorts();
-			reloadJoysticks();
+			reloadJoysticks1();
+			reloadJoysticks2();
 			ChannelDataUpdate += onChannelDataUpdate;
 			
 			reloadProfiles();
@@ -184,10 +193,6 @@ namespace vJoySerialFeeder
 			}
 		}
 		
-		
-		
-		
-		
 		void ErrorMessageBox(string message, string title) {
 			MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
@@ -207,9 +212,12 @@ namespace vJoySerialFeeder
 				useCustomSerialParameters = p.UseCustomSerialParameters;
 				serialParameters = p.SerialParameters;
 				protocolConfig = p.ProtocolConfiguration;
-				comboJoysticks.SelectedItem = p.VJoyInstance;
-				if(comboJoysticks.SelectedItem == null && comboJoysticks.Items.Count > 0)
-					comboJoysticks.SelectedIndex = 0;
+				comboJoysticks1.SelectedItem = p.VJoyInstance1;
+				comboJoysticks2.SelectedItem = p.VJoyInstance2;
+				if (comboJoysticks1.SelectedItem == null && comboJoysticks1.Items.Count > 0)
+					comboJoysticks1.SelectedIndex = 0;
+				if (comboJoysticks2.SelectedItem == null && comboJoysticks2.Items.Count > 0)
+					comboJoysticks2.SelectedIndex = 0;
 			}
 			
 			foreach(var m in p.Mappings) {
@@ -235,7 +243,8 @@ namespace vJoySerialFeeder
 			p.UseCustomSerialParameters = useCustomSerialParameters;
 			p.SerialParameters = serialParameters;
 			p.ProtocolConfiguration = protocolConfig;
-			p.VJoyInstance = comboJoysticks.Text;
+			p.VJoyInstance1 = comboJoysticks1.Text;
+			p.VJoyInstance2 = comboJoysticks2.Text;
 			p.LuaScript = luaScript;
 			p.FailsafeUpdateRate = failsafeUpdateRate;
 			p.FailsafeTime = failsafeTime;
@@ -271,25 +280,50 @@ namespace vJoySerialFeeder
 				comboPorts.SelectedIndex = 0;
 		}
 		
-		private void reloadJoysticks() {
-			object prevJoy = comboJoysticks.SelectedItem;
-			comboJoysticks.Items.Clear();
-			comboJoysticks.Items.AddRange(vJoyEnumerator.GetJoysticks());
-			comboJoysticks.SelectedItem = prevJoy;
-			if(comboJoysticks.SelectedItem == null && comboJoysticks.Items.Count > 0)
-				comboJoysticks.SelectedIndex = 0;
+		private void reloadJoysticks1() {
+			object prevJoy = comboJoysticks1.SelectedItem;
+			comboJoysticks1.Items.Clear();
+			comboJoysticks1.Items.AddRange(vJoyEnumerator1.GetJoysticks());
+			comboJoysticks1.SelectedItem = prevJoy;
+			if(comboJoysticks1.SelectedItem == null && comboJoysticks1.Items.Count > 0)
+				comboJoysticks1.SelectedIndex = 0;
 		}
-		
+
+		private void reloadJoysticks2()
+		{
+			object prevJoy = comboJoysticks2.SelectedItem;
+			comboJoysticks2.Items.Clear();
+			comboJoysticks2.Items.AddRange(vJoyEnumerator2.GetJoysticks());
+			comboJoysticks2.SelectedItem = prevJoy;
+			if (comboJoysticks2.SelectedItem == null && comboJoysticks2.Items.Count > 0)
+				comboJoysticks2.SelectedIndex = 0;
+		}
+
 		private SerialReader createSerialReader() {
 			return (SerialReader)Activator.CreateInstance(Protocols[comboProtocol.SelectedIndex]);
 		}
 		
 		private void connect() {
-			if(comboJoysticks.SelectedItem != null) {
+			if(comboJoysticks1.SelectedItem != null) {
 				try {
-					VJoy = vJoyEnumerator.GetVJoy(comboJoysticks.SelectedItem.ToString());
+					VJoy1 = vJoyEnumerator1.GetVJoy(comboJoysticks1.SelectedItem.ToString());
+					joy1 = comboJoysticks1.SelectedItem.ToString();
 				}
 				catch(VJoyBase.VJoyException ex) {
+					ErrorMessageBox(ex.Message, "VJoy Error");
+					return;
+				}
+			}
+
+			if (comboJoysticks2.SelectedItem != null)
+			{
+				try
+				{
+					VJoy2 = vJoyEnumerator2.GetVJoy(comboJoysticks2.SelectedItem.ToString());
+					joy2 = comboJoysticks2.SelectedItem.ToString();
+				}
+				catch (VJoyBase.VJoyException ex)
+				{
 					ErrorMessageBox(ex.Message, "VJoy Error");
 					return;
 				}
@@ -303,8 +337,9 @@ namespace vJoySerialFeeder
 
             if(!serialReader.OpenPort((string)comboPorts.SelectedItem, sp)) {
                 ErrorMessageBox("Can not open the port", "Serial Error");
-                VJoy.Release();
-                return;
+                VJoy1.Release();
+				VJoy2.Release();
+				return;
             }
 
 			comboProtocol.Enabled = false;
@@ -313,7 +348,8 @@ namespace vJoySerialFeeder
 			buttonPortsRefresh.Enabled = false;
 			buttonProtocolSetup.Enabled = false;
 			buttonConnect.Text = "Disconnect";
-			comboJoysticks.Enabled = false;
+			comboJoysticks1.Enabled = false;
+			comboJoysticks2.Enabled = false;
 			toolStripStatusLabel.Text = "Connecting ...";
 			connected = true;
 			
@@ -329,7 +365,8 @@ namespace vJoySerialFeeder
 		}
 		
 		private void disconnect2() {
-			VJoy.Release();
+			VJoy1.Release();
+			VJoy2.Release();
 			try {
                 serialReader.ClosePort();
 			} catch(Exception) {}
@@ -343,7 +380,8 @@ namespace vJoySerialFeeder
 			buttonConnect.Text = "Connect";
 			connected = false;
 			toolStripStatusLabel.Text = "Disconnected";
-			comboJoysticks.Enabled = true;
+			comboJoysticks1.Enabled = true;
+			comboJoysticks2.Enabled = true;
 		}
 		
 		void onChannelDataUpdate(object sender, EventArgs e) {

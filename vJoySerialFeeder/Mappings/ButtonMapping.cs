@@ -24,6 +24,10 @@ namespace vJoySerialFeeder
 	[DataContract]
 	public class ButtonMapping : Mapping
 	{
+		public VJoyBase VJoy { get; private set; }
+
+		private VJoyCollectionBase vJoyEnumerator;
+
 		/// <summary>
 		/// Stores the mapping parameters
 		/// </summary>
@@ -57,7 +61,7 @@ namespace vJoySerialFeeder
 		
 		[DataMember]
 		public ButtonParameters Parameters = new ButtonParameters {
-			thresh1 = 1500
+			thresh1 = 511
 		};
 		
 
@@ -66,7 +70,8 @@ namespace vJoySerialFeeder
 		private NumericUpDown buttonSpinner;
 		private Label inputLabel;
 		private PictureBox buttonStateBox;
-		
+		private ComboBox joystickDropDown;
+
 		static private Brush BRUSH_PUSHED = Brushes.LightGreen;
 		static private Brush BRUSH_NOT_PUSHED = new SolidBrush(Color.FromArgb(0, 64, 0));
 		
@@ -124,10 +129,12 @@ namespace vJoySerialFeeder
 			if(Parameters.Failsafe > 0)
 				Output = Parameters.Failsafe == 1 ? 0 : 1;
 		}
-		
-		
-		
-		
+
+		private void onJoystickChange(object sender, EventArgs e)
+		{
+			Joystick = joystickDropDown.SelectedItem.ToString();
+		}
+
 		private void onChannelChange(object sender, EventArgs e)
 		{
 			Channel = (int)channelSpinner.Value - 1;
@@ -159,12 +166,30 @@ namespace vJoySerialFeeder
 					Parameters = dialog.Parameters;
 			}
 		}
-		
+		void ErrorMessageBox(string message, string title)
+		{
+			MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+
 		private void initializePanel()
 		{
+			switch (Environment.OSVersion.Platform)
+			{
+				case PlatformID.Win32NT:
+					vJoyEnumerator = (VJoyCollectionBase)Activator.CreateInstance(Type.GetType("vJoySerialFeeder.VJoyCollectionWindows"));
+					break;
+				case PlatformID.Unix:
+					vJoyEnumerator = (VJoyCollectionBase)Activator.CreateInstance(Type.GetType("vJoySerialFeeder.VJoyCollectionLinux"));
+					break;
+				default:
+					ErrorMessageBox("Unsupported platform", "Fatal");
+					Application.Exit();
+					break;
+			}
+
 			panel = new FlowLayoutPanel();
 			panel.SuspendLayout();
-			panel.Size = new Size(600, 30);
+			panel.Size = new Size(670, 30);
 			
 			var label = new Label();
 			label.Text = "Channel:";
@@ -229,7 +254,15 @@ namespace vJoySerialFeeder
 			button.Click += onRemoveClick;
 			button.Size = new Size(55, 20);
 			panel.Controls.Add(button);
-			
+
+			joystickDropDown = new ComboBox();
+			joystickDropDown.DropDownStyle = ComboBoxStyle.DropDownList;
+			joystickDropDown.Size = new Size(72, 20);
+			joystickDropDown.Items.AddRange(vJoyEnumerator.GetJoysticks());
+			joystickDropDown.SelectedIndex = 0;
+			joystickDropDown.SelectedIndexChanged += onJoystickChange;
+			panel.Controls.Add(joystickDropDown);
+
 			panel.ResumeLayout();
 		}
 	}

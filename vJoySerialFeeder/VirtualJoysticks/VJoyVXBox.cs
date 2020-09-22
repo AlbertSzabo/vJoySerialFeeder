@@ -140,7 +140,11 @@ namespace vJoySerialFeeder
 				}
 			}
 		}
-		
+
+		public override void SetName(string value)
+		{
+		}
+
 		public override void SetButton(int btn, bool value)
 		{
 			if(btn < 0 || btn > 10)

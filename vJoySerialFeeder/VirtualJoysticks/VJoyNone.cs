@@ -17,7 +17,11 @@ namespace vJoySerialFeeder
 		public VJoyNone()
 		{
 		}
-		
+
+		public override void SetName(string value)
+		{
+		}
+
 		public override void SetState()
 		{
 		}

@@ -7,14 +7,15 @@ using vJoyInterfaceWrap;
 
 namespace vJoySerialFeeder
 {
-	/// <summary>
-	/// Implements vJoy
-	/// </summary>
+    /// <summary>
+    /// Implements vJoy
+    /// </summary>
     public class VJoyVJoy : VJoyBase
     {
         private vJoy joystick;
         private vJoy.JoystickState state;
         private int id;
+        public string JoystickName {get; set;}
 
         public VJoyVJoy()
         {
@@ -104,6 +105,11 @@ namespace vJoySerialFeeder
                     state.Dial = v;
                     break;
             }
+        }
+
+        public override void SetName(string value)
+        {
+            JoystickName = value;
         }
 
         public override void SetButton(int btn, bool value)
