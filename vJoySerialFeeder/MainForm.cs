@@ -32,7 +32,7 @@ namespace vJoySerialFeeder
 		public VJoyBase VJoy1 { get; private set; }
 		public VJoyBase VJoy2 { get; private set; }
 
-		public string joy1, joy2;
+		public int joy1, joy2;
 
 		public event EventHandler ChannelDataUpdate;
 		
@@ -307,7 +307,7 @@ namespace vJoySerialFeeder
 			if(comboJoysticks1.SelectedItem != null) {
 				try {
 					VJoy1 = vJoyEnumerator1.GetVJoy(comboJoysticks1.SelectedItem.ToString());
-					joy1 = comboJoysticks1.SelectedItem.ToString();
+					joy1 = comboJoysticks1.SelectedIndex;
 				}
 				catch(VJoyBase.VJoyException ex) {
 					ErrorMessageBox(ex.Message, "VJoy Error");
@@ -320,7 +320,7 @@ namespace vJoySerialFeeder
 				try
 				{
 					VJoy2 = vJoyEnumerator2.GetVJoy(comboJoysticks2.SelectedItem.ToString());
-					joy2 = comboJoysticks2.SelectedItem.ToString();
+					joy2 = comboJoysticks2.SelectedIndex;
 				}
 				catch (VJoyBase.VJoyException ex)
 				{

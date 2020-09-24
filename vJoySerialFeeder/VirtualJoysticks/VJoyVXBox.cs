@@ -141,7 +141,7 @@ namespace vJoySerialFeeder
 			}
 		}
 
-		public override void SetName(string value)
+		public override void SetJoystick(int index)
 		{
 		}
 

@@ -125,6 +125,7 @@ namespace vJoySerialFeeder
 		{
 			var m = new ButtonBitmapMapping();
 			m.Channel = Channel;
+			m.Joystick = Joystick;
 
 			if(Parameters == null)
 				// this could happen only if deserializing corrupt profile

@@ -66,7 +66,7 @@ namespace vJoySerialFeeder
 		/// Every mapping has a single Joystick to set the data to (although this is not forced)
 		/// </summary>
 		[DataMember]
-		public string Joystick;
+		public int Joystick;
 
 		/// <summary>
 		/// Should restrict the output value to the meaningful ranges for

@@ -99,7 +99,7 @@ namespace vJoySerialFeeder
         	
         	_reset();
         }
-        public override void SetName(string value)
+        public override void SetJoystick(int index)
         {
         }
 

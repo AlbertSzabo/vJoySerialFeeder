@@ -15,7 +15,7 @@ namespace vJoySerialFeeder
         private vJoy joystick;
         private vJoy.JoystickState state;
         private int id;
-        public string JoystickName {get; set;}
+        public int JoystickIndex {get; set;}
 
         public VJoyVJoy()
         {
@@ -107,9 +107,9 @@ namespace vJoySerialFeeder
             }
         }
 
-        public override void SetName(string value)
+        public override void SetJoystick(int index)
         {
-            JoystickName = value;
+            JoystickIndex = index;
         }
 
         public override void SetButton(int btn, bool value)

@@ -163,7 +163,7 @@ namespace vJoySerialFeeder
 		public override void UpdateJoystick(VJoyBase vjoy)
 		{
 			vjoy.SetAxis(Axis, Output);
-			vjoy.SetName(Joystick);
+			vjoy.SetJoystick(Joystick);
 		}
 		
 		public override void Failsafe()
@@ -218,7 +218,7 @@ namespace vJoySerialFeeder
 
 		private void onJoystickChange(object sender, EventArgs e)
 		{
-			Joystick = joystickDropDown.SelectedItem.ToString();
+			Joystick = joystickDropDown.SelectedIndex;
 		}
 
 		void ErrorMessageBox(string message, string title)
@@ -314,7 +314,7 @@ namespace vJoySerialFeeder
 			joystickDropDown.DropDownStyle = ComboBoxStyle.DropDownList;
 			joystickDropDown.Size = new Size(72, 20);
 			joystickDropDown.Items.AddRange(vJoyEnumerator.GetJoysticks());
-			joystickDropDown.SelectedIndex = 0;
+			joystickDropDown.SelectedIndex = Joystick;
 			joystickDropDown.SelectedIndexChanged += onJoystickChange;
 			panel.Controls.Add(joystickDropDown);
 

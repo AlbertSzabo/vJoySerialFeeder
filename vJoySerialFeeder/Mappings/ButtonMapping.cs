@@ -84,6 +84,7 @@ namespace vJoySerialFeeder
 			bm.Parameters = Parameters;
 			bm.Button = Button;
 			bm.Channel = Channel;
+			bm.Joystick = Joystick;
 			
 			return bm;
 		}
@@ -132,7 +133,7 @@ namespace vJoySerialFeeder
 
 		private void onJoystickChange(object sender, EventArgs e)
 		{
-			Joystick = joystickDropDown.SelectedItem.ToString();
+			Joystick = joystickDropDown.SelectedIndex;
 		}
 
 		private void onChannelChange(object sender, EventArgs e)
