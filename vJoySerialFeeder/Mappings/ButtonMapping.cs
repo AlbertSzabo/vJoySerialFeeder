@@ -260,7 +260,7 @@ namespace vJoySerialFeeder
 			joystickDropDown.DropDownStyle = ComboBoxStyle.DropDownList;
 			joystickDropDown.Size = new Size(72, 20);
 			joystickDropDown.Items.AddRange(vJoyEnumerator.GetJoysticks());
-			joystickDropDown.SelectedIndex = 0;
+			joystickDropDown.SelectedIndex = Joystick;
 			joystickDropDown.SelectedIndexChanged += onJoystickChange;
 			panel.Controls.Add(joystickDropDown);
 
